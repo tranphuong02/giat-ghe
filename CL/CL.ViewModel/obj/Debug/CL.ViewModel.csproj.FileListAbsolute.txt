@@ -1,0 +1,5 @@
+D:\Project\2015\GiatGhe\CL\CL.ViewModel\bin\Debug\CL.ViewModel.dll
+D:\Project\2015\GiatGhe\CL\CL.ViewModel\bin\Debug\CL.ViewModel.pdb
+D:\Project\2015\GiatGhe\CL\CL.ViewModel\obj\Debug\CL.ViewModel.csprojResolveAssemblyReference.cache
+D:\Project\2015\GiatGhe\CL\CL.ViewModel\obj\Debug\CL.ViewModel.dll
+D:\Project\2015\GiatGhe\CL\CL.ViewModel\obj\Debug\CL.ViewModel.pdb

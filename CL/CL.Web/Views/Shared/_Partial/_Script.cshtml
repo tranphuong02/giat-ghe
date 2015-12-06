@@ -1,0 +1,26 @@
+﻿<script src="~/Content/Scripts/jquery/jquery.js"></script>
+<script src="~/Content/Scripts/jquery/jquery-migrate.min.js"></script>
+<script src="~/Content/Plugins/jsj-gallery-slideshow/static/js/modernizr.min.js"></script>
+<script src="~/Content/Plugins/sf-taxonomy-menu/tree-view/lib/jquery.cookie.js"></script>
+<script src="~/Content/Plugins/sf-taxonomy-menu/tree-view/jquery.treeview.js"></script>
+<script src="~/Content/Plugins/super-socializer/js/modernizr.custom.82187.js"></script>
+<script src="~/Content/Plugins/best-logo-slider/assets/js/owl.carousel.min.js"></script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery('.wpb_logo_slider').owlCarousel({
+            autoPlay: 3000, //Set AutoPlay to 3 seconds
+            items: 5,
+            itemsDesktopSmall: [979, 4],
+            itemsTablet: [768, 3],
+            itemsMobile: [479, 1],
+            paginationSpeed: 800,
+            stopOnHover: true,
+            navigation: true,
+            pagination: true,
+            slideSpeed: 1000,
+            navigationText: ["<", ">"],
+        });
+    });
+</script>
+

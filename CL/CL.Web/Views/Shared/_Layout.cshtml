@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html lang="vi" prefix="og: http://ogp.me/ns#">
+<head>
+    @{
+        Html.RenderPartial("_Partial/_Head");
+        Html.RenderPartial("_Partial/_Style");
+        Html.RenderPartial("_Partial/_Script");
+    }
+</head>
+<body class="home page page-id-256 page-template-default">
+    <div class="body-wrap">
+        <header>
+            @{
+                Html.RenderPartial("_Partial/_Header");
+            }
+        </header><!-- header -->
+        <main>
+            <div class="box-wrap">
+                @RenderBody()
+                @{
+                    Html.RenderPartial("_Partial/_Aside");
+                    Html.RenderPartial("_Partial/_LogoSlider");
+                }
+            </div>
+        </main>
+        <footer>
+            @{
+                Html.RenderPartial("_Partial/_Footer");
+            }
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+﻿@using CL.Transverse
+<script>
+    var $dataTables;
+    var oTable;
+
+    $(document).ready(function () {
+        initDomObject();
+        initDataTable();
+    });
+
+    // Init Dom Object
+    function initDomObject() {
+        $dataTables = $('.dataTables');
+    }
+
+    // Init DataTable
+    function initDataTable() {
+        oTable = $dataTables.DataTable({
+            "sAjaxSource": "@Url.Action("GetCategories", "Category", new { area = Constants.GeneralAdminConfigs.AdminArea })",
+            "bProcessing": true,
+            "bStateSave": false,
+            "bServerSide": true,
+            "sServerMethod": httpMethod().POST,
+            "bSortCellsTop": true,
+            "iDisplayLength": commonVariables().iDisplayLength,
+            "sDom": "Rlfrtip",
+            "tableTools": {
+                "sSwfPath": datatableToolkitUrl().datatableToolkitUrl
+            },
+            "bFilter": true,
+            "aaSorting": [],
+            "aLengthMenu": commonVariables().aLengthMenu,
+            "columnDefs": [{ "targets": [4], "orderable": false }],
+            "columns": [
+                {
+                    "data": "Title",
+                    "className": "text-left"
+                },
+                 {
+                     "data": "Url",
+                     "className": "text-left"
+                 },
+                {
+                    "data": function (d) {
+                        return d;
+                    },
+                    "render": function (d) {
+                        return d.Parent;
+                    },
+                    "className": "text-left"
+                },
+                {
+                    "data": "Url",
+                    "className": "text-left"
+                },
+                {
+                    "data": function (d) {
+                        return d.Id;
+                    },
+                    "render": function (d) {
+                        var render = '';
+                        // Edit
+                        render += '<a href="@Url.Action("Edit", "Category", new{area = Constants.GeneralAdminConfigs.AdminArea})/' + d + '"><i class="fa-edit"></i></a>&nbsp;';
+                        // Delete
+                        render += '<a href="javascript:void(0)" onclick="delete(this);" data-id="'+d+'"><i class="fa-trash-o"></i></a>';
+                        return render;
+                    },
+                    "className": "text-center"
+                }
+            ],
+            "fnRowCallback": dataTableRowCallback,
+            "fnDrawCallback": dataTableDrawCallback
+        });
+    }
+
+    function dataTableDrawCallback() {
+        $(".dataTables_wrapper [title]").tipsy();
+        $('input[aria-controls="datatable"]').attr("Maxlength", commonVariables().searchLength);
+    }
+
+    function dataTableRowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+    }
+
+    $("thead input").keyup(function () {
+        oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $(this).parent("td").index()));
+    });
+</script>
