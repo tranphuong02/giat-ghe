@@ -11,7 +11,9 @@ using System.Web.Routing;
 using AutoMapper;
 using CL.Framework.Autofac;
 using CL.Transverse.Datatables;
+using CL.Transverse.Model.Post;
 using CL.Transverse.ModelBinder;
+using CL.ViewModel.Category;
 
 namespace CL.Web
 {
@@ -32,15 +34,16 @@ namespace CL.Web
             // migration database
             Transverse.Migrations.DatabaseMigrations.ApplyDatabaseMigrations();
 
-            // Mapper
-            //AutoMapperConfiguration.Configure();
-
-            Mapper.AssertConfigurationIsValid();
-
             ModelBinders.Binders.Add(typeof(DataTablesParam), new DataTablesModelBinder());
             ModelBinders.Binders.Add(typeof(Decimal), new DecimalModelBinder());
             ModelBinders.Binders.Add(typeof(Decimal?), new DecimalModelBinder());
             ModelBinders.Binders.Add(typeof(string), new StringModelBinder());
+
+            // Mapper
+            //AutoMapperConfiguration.Configure();
+
+            Mapper.AssertConfigurationIsValid();
+            InitMap();
         }
 
         protected void DependencyInjectionConfiguration()
@@ -69,6 +72,11 @@ namespace CL.Web
             // Register for ASP.NET Web API
             var resolver = new AutofacWebApiDependencyResolver(container);
             GlobalConfiguration.Configuration.DependencyResolver = resolver;
+        }
+
+        private void InitMap()
+        {
+            Mapper.CreateMap<P_Category, CategoryVM>();
         }
     }
 }

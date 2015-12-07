@@ -30,8 +30,12 @@
             "bFilter": true,
             "aaSorting": [],
             "aLengthMenu": commonVariables().aLengthMenu,
-            "columnDefs": [{ "targets": [4], "orderable": false }],
+            "columnDefs": [{ "targets": [3, 4], "orderable": false }],
             "columns": [
+                {
+                    "data": "Id",
+                    "className": "hidden"
+                },
                 {
                     "data": "Title",
                     "className": "text-left"
@@ -50,7 +54,13 @@
                     "className": "text-left"
                 },
                 {
-                    "data": "Url",
+                    "data": function (d) {
+                        return d;
+                    },
+                    "render": function (d) {
+                        var checked = d.IsPublish ? 'checked' : '';
+                        return '<input type="checkbox" class="js-switch" ' + checked + ' data-id="' + d.Id + '"/>';
+                    },
                     "className": "text-left"
                 },
                 {
@@ -62,26 +72,94 @@
                         // Edit
                         render += '<a href="@Url.Action("Edit", "Category", new{area = Constants.GeneralAdminConfigs.AdminArea})/' + d + '"><i class="fa-edit"></i></a>&nbsp;';
                         // Delete
-                        render += '<a href="javascript:void(0)" onclick="delete(this);" data-id="'+d+'"><i class="fa-trash-o"></i></a>';
+                        render += '<a href="javascript:void(0)" onclick="delete(this);" data-id="' + d + '"><i class="fa-trash-o"></i></a>';
                         return render;
                     },
                     "className": "text-center"
                 }
             ],
-            "fnRowCallback": dataTableRowCallback,
             "fnDrawCallback": dataTableDrawCallback
         });
     }
 
     function dataTableDrawCallback() {
-        $(".dataTables_wrapper [title]").tipsy();
         $('input[aria-controls="datatable"]').attr("Maxlength", commonVariables().searchLength);
-    }
-
-    function dataTableRowCallback(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        switcherCheckBoxActiveStatus();
     }
 
     $("thead input").keyup(function () {
         oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $(this).parent("td").index()));
     });
+
+    function switcherCheckBoxActiveStatus() {
+        /// <summary>
+        /// change display of checkbox and event active/de-active category
+        /// </summary>
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+
+        elems.forEach(function (html) {
+            if ($(html).attr("data-switchery") != "true") {
+                var switchery = new Switchery(html, { color: '#18a689', size: 'small' });
+            }
+        });
+
+        $('.switchery').click(function () {
+            var $this = $(this);
+            var beforeIsChecked = !($this.parent().children('input[type=checkbox]'))[0].checked;
+
+            var categoryName = $this.parent().parent().children('td:nth-child(2)')[0].innerHTML.trim();
+            var categoryId = $this.parent().parent().children('td:first')[0].innerHTML.trim();
+
+            console.log(categoryName, categoryId);
+            // parse userId to int for send to server
+            categoryId = parseInt(categoryId);
+
+            var labelIsEnable;
+            var labelUpperIsEnable;
+            var btnColor;
+
+            if (beforeIsChecked) {
+                labelIsEnable = "de-active";
+                labelUpperIsEnable = "De-active successful!";
+                btnColor = "#ff5252";
+            } else {
+                labelIsEnable = "active";
+                labelUpperIsEnable = "Active successful!";
+                btnColor = "#18a689";
+            }
+
+            swal({
+                title: "Are you sure?",
+                text: "You will " + labelIsEnable + " category: " + categoryName,
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: btnColor,
+                confirmButtonText: "Yes, " + labelIsEnable + " it!",
+                cancelButtonText: "No, cancel",
+                closeOnConfirm: false,
+                closeOnCancel: true,
+                showLoaderOnConfirm: true,
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url: '@Url.Action("Active", "Category")',
+                        type: httpMethod().POST,
+                        data: {
+                            id: categoryId
+                        },
+                        success: function (result) {
+                            //if (result.Code == responseCode().Success) {
+                            //    swal(labelUpperIsEnable, result.Message, "success");
+                            //} else {
+                            //    $this.click();
+                            //    swal(labelUpperIsEnable, result.Message, "error");
+                            //}
+                        },
+                    });
+                } else {
+                    $this.click();
+                }
+            });
+        });
+    }
 </script>

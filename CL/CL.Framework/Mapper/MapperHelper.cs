@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using AutoMapper;
 
 namespace CL.Framework.Mapper
 {
@@ -22,9 +25,9 @@ namespace CL.Framework.Mapper
             return AutoMapper.Mapper.Map<IEnumerable<TSource>, IEnumerable<TDestination>>(source);
         }
 
-        public static List<TDestination> MapTo<TSource, TDestination>(this List<TSource> source)
+        public static List<TDestination> MapTo<TSource, TDestination>(this List<TSource> source, Expression<Func<TDestination, object>> destinationMember, Action<IMemberConfigurationExpression<TSource>> memberOptions)
         {
-            AutoMapper.Mapper.CreateMap<TSource, TDestination>().IgnoreAllNonExisting();
+            AutoMapper.Mapper.CreateMap<TSource, TDestination>().IgnoreAllNonExisting().ForMember(destinationMember, memberOptions);
             return AutoMapper.Mapper.Map<List<TSource>, List<TDestination>>(source);
         }
     }

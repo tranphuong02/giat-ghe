@@ -93,6 +93,8 @@
     <Compile Include="Datatables\TypeExtensions.cs" />
     <Compile Include="Datatables\TypeFilters.cs" />
     <Compile Include="Enums\CLErrorType.cs" />
+    <Compile Include="Enums\ResponseCode.cs" />
+    <Compile Include="ErrorHandling\CLBusinessException.cs" />
     <Compile Include="ErrorHandling\CLException.cs" />
     <Compile Include="ErrorHandling\ErrorModel.cs" />
     <Compile Include="ErrorHandling\ExceptionMessage.cs" />
@@ -103,6 +105,10 @@
     <Compile Include="Migrations\201512060759556_RemoveResourceFromCategory.cs" />
     <Compile Include="Migrations\201512060759556_RemoveResourceFromCategory.Designer.cs">
       <DependentUpon>201512060759556_RemoveResourceFromCategory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512070944494_UpdateDB.cs" />
+    <Compile Include="Migrations\201512070944494_UpdateDB.Designer.cs">
+      <DependentUpon>201512070944494_UpdateDB.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\DatabaseMigrations.cs" />
@@ -118,6 +124,12 @@
     <Compile Include="Model\System\S_Configuration.cs" />
     <Compile Include="Model\System\S_User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Message.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Message.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewVM\BaseVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -135,6 +147,13 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512060759556_RemoveResourceFromCategory.resx">
       <DependentUpon>201512060759556_RemoveResourceFromCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512070944494_UpdateDB.resx">
+      <DependentUpon>201512070944494_UpdateDB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Message.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Message.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

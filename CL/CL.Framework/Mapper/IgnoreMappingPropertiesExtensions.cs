@@ -11,8 +11,7 @@ namespace CL.Framework.Mapper
             var sourceType = typeof(TSource);
             var destinationType = typeof(TDestination);
 
-            var existingMaps = AutoMapper.Mapper.GetAllTypeMaps().First(x => x.SourceType == sourceType
-                && x.DestinationType == destinationType);
+            var existingMaps = AutoMapper.Mapper.GetAllTypeMaps().First(x => x.SourceType == sourceType && x.DestinationType == destinationType);
             foreach (var property in existingMaps.GetUnmappedPropertyNames())
             {
                 expression.ForMember(property, opt => opt.Ignore());
@@ -22,7 +21,7 @@ namespace CL.Framework.Mapper
             {
                 PropertyDescriptor descriptor = TypeDescriptor.GetProperties(sourceType)[property.Name];
 
-                if (descriptor.PropertyType.Namespace != "Hello.Datasource")
+                if (descriptor.PropertyType.Namespace != "CL.Transverse")
                 {
                     continue;
                 }

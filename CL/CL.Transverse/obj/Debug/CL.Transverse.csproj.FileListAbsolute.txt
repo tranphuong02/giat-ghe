@@ -44,3 +44,5 @@ D:\Project\2015\GiatGhe\CL\CL.Transverse\bin\Debug\Microsoft.Web.Infrastructure.
 D:\Project\2015\GiatGhe\CL\CL.Transverse\bin\Debug\System.Web.Helpers.dll
 D:\Project\2015\GiatGhe\CL\CL.Transverse\bin\Debug\AutoMapper.xml
 D:\Project\2015\GiatGhe\CL\CL.Transverse\bin\Debug\System.Web.Helpers.xml
+D:\Project\2015\GiatGhe\CL\CL.Transverse\obj\Debug\CL.Transverse.Migrations.UpdateDB.resources
+D:\Project\2015\GiatGhe\CL\CL.Transverse\obj\Debug\CL.Transverse.Resource.Message.resources

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
-using AutoMapper;
 using CL.DataAccess.Repository;
 using CL.Framework.Mapper;
 using CL.Transverse.Datatables;
@@ -28,17 +27,18 @@ namespace CL.Web.Areas.Administrator.Controllers
         public ActionResult GetCategories(DataTablesParam dataTableParam)
         {
             var entities = _categoryRepository.GetAll();
-            var dataTableResult = DataTablesResult.Create(entities, dataTableParam);
-            var dataTableData = dataTableResult.Data as DataTablesData;
-            if (dataTableData != null)
-            {
-                var entitesResults = dataTableData.aaData as List<P_Category>;
-                var cc = entitesResults.MapTo<P_Category, CategoryVM>();
-                var b = cc;
-            }
+            var dataTableResults = DataTablesResult.Create(entities, dataTableParam);
+            var dataTableData = dataTableResults.Data as DataTablesData;
+            if (dataTableData == null) return dataTableResults;
+            var entitesResults = dataTableData.aaData as List<P_Category>;
+            dataTableData.aaData = entitesResults.MapTo<P_Category, CategoryVM>(x => x.Parent, y => y.MapFrom(x => x.Parent != null ? x.Parent.Title : ""));
+            return dataTableResults;
+        }
 
-
-            return DataTablesResult.Create<P_Category, CategoryVM>(entities, dataTableParam);
+        [HttpPost]
+        public ActionResult Active(int id)
+        {
+            
         }
     }
 }

@@ -9,5 +9,8 @@ namespace CL.Transverse.Model.Post
         public string Keyword { get; set; }
         public string Description { get; set; }
         public int? ParentId { get; set; }
+
+        [ForeignKey("ParentId")]
+        public P_Category Parent { get; set; }
     }
 }
