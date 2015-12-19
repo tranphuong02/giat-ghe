@@ -1,0 +1,122 @@
+﻿@using CL.Transverse
+@model CL.ViewModel.Category.CategoryAddVM
+@{
+    ViewBag.Title = "Add Category";
+    Layout = Constants.GeneralAdminConfigs.Layout;
+}
+@section styles
+{
+    <link href="~/Content/Administrator/css/plugins/chosen/chosen.css" rel="stylesheet" />
+}
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Content/Administrator/js/plugins/chosen/chosen.jquery.js"></script>
+    <script>
+        // Variables
+        var $title, $url, $parentId;
+
+        $(document).ready(function () {
+            // Init dom objects
+            $title = $('#Title');
+            $url = $('#Url');
+            $parentId = $('#ParentId');
+
+            // Init Events
+            $parentId.chosen({ width: '100%' });
+            
+            $title.on('keyup', function () {
+                $url.val($title.val().genUrl());
+            });
+        });
+    </script>
+}
+<div class="ibox float-e-margins">
+    <div class="text-danger text-right">* is required</div>
+    @using (Html.BeginForm("Add", "Category", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <div class="col-md-2">
+                @Html.LabelFor(model => model.Title, new { @class = "control-label" })<span class="text-danger"> *</span>
+            </div>
+            <div class="col-md-5">
+                @Html.TextBoxFor(model => model.Title, new { @class = "form-control", placeholder = "Title" })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-2">
+                @Html.LabelFor(model => model.Url, new { @class = "control-label" })<span class="text-danger"> *</span>
+            </div>
+            <div class="col-md-5">
+                @Html.TextBoxFor(model => model.Url, new { @class = "form-control", placeholder = "Url" })
+                @Html.ValidationMessageFor(model => model.Url, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-2">
+                @Html.LabelFor(model => model.ParentId, new { @class = "control-label" })
+            </div>
+            <div class="col-md-5">
+                @*@Html.TextBoxFor(model => model.ParentId, new { @class = "form-control", placeholder = "ParentId" })*@
+                <select id="ParentId" name="ParentId">
+                    <option value="">None</option>
+                    @if (Model.Categories != null && Model.Categories.Any())
+                    {
+                        foreach (var category in Model.Categories)
+                        {
+                            var selected = category.Id == Model.ParentId
+                                ? "selected"
+                                : "";
+
+                            <option @selected value="@category.Id">@category.Title</option>
+                        }
+                    }
+                </select>
+                @Html.ValidationMessageFor(model => model.ParentId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-2">
+                @Html.LabelFor(model => model.Keyword, new { @class = "control-label" })<span class="text-danger"> *</span>
+            </div>
+            <div class="col-md-5">
+                @Html.TextAreaFor(model => model.Keyword, new { @class = "form-control", placeholder = "Keyword" })
+                @Html.ValidationMessageFor(model => model.Keyword, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-2">
+                @Html.LabelFor(model => model.Description, new { @class = "control-label" })
+            </div>
+            <div class="col-md-5">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", placeholder = "Description" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-1 col-xs-offset-1 col-xs-4">
+                <a class='btn btn-warning' href="@Url.Action("Index")">
+                    <i class="fa fa-arrow-left"></i>
+                    Cancel
+                </a>
+            </div>
+            <div class='col-md-1 col-xs-2'>
+                <button type="submit" value="Save" class="btn btn-primary">
+                    <i class="fa fa-check"></i>
+                    Save
+                </button>
+            </div>
+        </div>
+    }
+</div>

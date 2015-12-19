@@ -1,12 +1,4 @@
-﻿//////////////////////////////////////////////////////////////////////
-// File Name    : Common
-// System Name  : VST
-// Summary      :
-// Author       : dinh.nguyen
-// Change Log   : 15/11/2015 12:32:53 AM - Create Date
-/////////////////////////////////////////////////////////////////////
-
-Array.prototype.remove = function () {
+﻿Array.prototype.remove = function () {
     var what, a = arguments, l = a.length, ax;
     while (l && this.length) {
         what = a[--l];

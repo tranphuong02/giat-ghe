@@ -1,0 +1,17 @@
+﻿.input-validation-error {
+    background: rgba(255, 0, 0, 0.06);
+}
+
+form label.control-label {
+    width: 100%;
+}
+
+form .form-group div:first-child {
+    position: relative;
+}
+
+form label.control-label + span {
+    position: absolute;
+    top: 8px;
+    right: 0;
+}

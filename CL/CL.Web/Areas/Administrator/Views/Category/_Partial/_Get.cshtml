@@ -17,7 +17,7 @@
     function initDataTable() {
         oTable = $dataTables.DataTable({
             "sAjaxSource": "@Url.Action("GetCategories", "Category", new { area = Constants.GeneralAdminConfigs.AdminArea })",
-            "bProcessing": true,
+            "bProcessing": false,
             "bStateSave": false,
             "bServerSide": true,
             "sServerMethod": httpMethod().POST,
@@ -30,7 +30,7 @@
             "bFilter": true,
             "aaSorting": [],
             "aLengthMenu": commonVariables().aLengthMenu,
-            "columnDefs": [{ "targets": [3, 4], "orderable": false }],
+            "columnDefs": [{ "targets": [3, 4, 5], "orderable": false }],
             "columns": [
                 {
                     "data": "Id",
@@ -70,9 +70,9 @@
                     "render": function (d) {
                         var render = '';
                         // Edit
-                        render += '<a href="@Url.Action("Edit", "Category", new{area = Constants.GeneralAdminConfigs.AdminArea})/' + d + '"><i class="fa-edit"></i></a>&nbsp;';
+                        render += '<a href="@Url.Action("Edit", "Category", new{area = Constants.GeneralAdminConfigs.AdminArea})/' + d + '" class="btn btn-primary"><i class="fa fa-edit"></i></a>&nbsp;';
                         // Delete
-                        render += '<a href="javascript:void(0)" onclick="delete(this);" data-id="' + d + '"><i class="fa-trash-o"></i></a>';
+                        render += '<a href="javascript:void(0)" onclick="deleteCategory(this);" data-id="' + d + '" class="btn btn-danger"><i class="fa fa-trash-o"></i></a>';
                         return render;
                     },
                     "className": "text-center"
@@ -110,21 +110,23 @@
             var categoryName = $this.parent().parent().children('td:nth-child(2)')[0].innerHTML.trim();
             var categoryId = $this.parent().parent().children('td:first')[0].innerHTML.trim();
 
-            console.log(categoryName, categoryId);
             // parse userId to int for send to server
             categoryId = parseInt(categoryId);
 
             var labelIsEnable;
             var labelUpperIsEnable;
+            var labelUpperIsEnableFail;
             var btnColor;
 
             if (beforeIsChecked) {
                 labelIsEnable = "de-active";
                 labelUpperIsEnable = "De-active successful!";
+                labelUpperIsEnableFail = "De-active un-successful!";
                 btnColor = "#ff5252";
             } else {
                 labelIsEnable = "active";
                 labelUpperIsEnable = "Active successful!";
+                labelUpperIsEnableFail = "Active un-successful!";
                 btnColor = "#18a689";
             }
 
@@ -148,12 +150,12 @@
                             id: categoryId
                         },
                         success: function (result) {
-                            //if (result.Code == responseCode().Success) {
-                            //    swal(labelUpperIsEnable, result.Message, "success");
-                            //} else {
-                            //    $this.click();
-                            //    swal(labelUpperIsEnable, result.Message, "error");
-                            //}
+                            if (result.IsSuccess) {
+                                swal(labelUpperIsEnable, result.Message, "success");
+                            } else {
+                                $this.click();
+                                swal(labelUpperIsEnableFail, result.Message, "error");
+                            }
                         },
                     });
                 } else {
@@ -162,4 +164,56 @@
             });
         });
     }
+    
+    function deleteCategory(e) {
+        /// <summary>
+        /// Delete category
+        /// </summary>
+        
+        var $that = $(e);
+
+        var categoryName = $that.parent().parent().children('td:nth-child(2)')[0].innerHTML.trim();
+        var categoryId = $that.parent().parent().children('td:first')[0].innerHTML.trim();
+
+        console.log(categoryName, categoryId);
+
+        swal({
+            title: "Are you sure?",
+            text: "You will delete category: " + categoryName,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#ff5252",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel",
+            closeOnConfirm: false,
+            closeOnCancel: true,
+            showLoaderOnConfirm: true,
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: '@Url.Action("Delete", "Category")',
+                    type: httpMethod().POST,
+                    data: {
+                        id: categoryId
+                    },
+                    success: function (result) {
+                        if (result.IsSuccess) {
+                            swal("Delete successful!", result.Message, "success");
+                            reloadDatatable();
+                        } else {
+                            $this.click();
+                            swal("Delete un-successful!", result.Message, "error");
+                        }
+                    },
+                });
+            } else {
+                $this.click();
+            }
+        });
+    }
+    
+    function reloadDatatable() {
+        oTable.ajax.reload(null, false);
+    }
+    
 </script>

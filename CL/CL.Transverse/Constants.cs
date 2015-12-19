@@ -6,6 +6,8 @@
         {
             public const string AdminArea = "Administrator";
             public const string Layout = "~/Areas/Administrator/Views/Shared/_Admin.cshtml";
+            public const string StatusMessageText = "StatusMessageText";
+            public const string StatusMessageType = "StatusMessageType";
         }
 
         public class DateFormat
@@ -48,6 +50,27 @@
             /// Info
             /// </summary>
             public const string Info = "INFO";
+        }
+
+        public class Message
+        {
+            public const string ActiveSuccessFormat = "Active {0} {1} is successful.";
+            public const string ActiveFailFormat = "Active {0} {1} is un-successful.";
+            public const string DeActiveSuccessFormat = "De-Active {0} {1} is successful.";
+            public const string DeActiveFailFormat = "De-Active {0} {1} is un-successful.";
+            public const string DeleteSuccessFormat = "Active {0} {1} is successful.";
+            public const string DeleteFailFormat = "Active {0} {1} is un-successful.";
+            public const string AddSuccessFormat = "Add {0} {1} is successful.";
+            public const string AddFailFormat = "Add {0} {1} is un-successful.";
+            public const string EditSuccessFormat = "Edit {0} {1} is successful.";
+            public const string EditFailFormat = "Edit {0} {1} is un-successful.";
+            public const string ErrorOccur = "Error occur, please try again!";
+            public const string Oops = "Oops!! Please fill all the required fields and then try agains.";
+        }
+
+        public class Page
+        {
+            public const string Category = "Category";
         }
     }
 }
