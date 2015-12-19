@@ -135,7 +135,7 @@ function addListener_Keyboard_Ctrl_Enter($elementSource, $elementDestination, ac
 
 function datatableToolkitUrl() {
     return {
-        sSwfPath: "~/Content/Administrator/js/plugins/dataTables/swf/copy_csv_xls_pdf.swf"
+        sSwfPath: "/Content/Administrator/js/plugins/dataTables/swf/copy_csv_xls_pdf.swf"
     }
 }
 

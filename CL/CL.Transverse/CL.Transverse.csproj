@@ -93,6 +93,7 @@
     <Compile Include="Datatables\TypeExtensions.cs" />
     <Compile Include="Datatables\TypeFilters.cs" />
     <Compile Include="Enums\CLErrorType.cs" />
+    <Compile Include="Enums\ResourceType.cs" />
     <Compile Include="Enums\ResponseCode.cs" />
     <Compile Include="Enums\StatusMessageType.cs" />
     <Compile Include="ErrorHandling\CLBusinessException.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="ErrorHandling\ExceptionMessage.cs" />
     <Compile Include="Extensions\HtmlExtensions.cs" />
     <Compile Include="Extensions\TempDataExtensions.cs" />
+    <Compile Include="Helpers\BackendHelpers.cs" />
     <Compile Include="Migrations\201512060525406_InitDB.cs" />
     <Compile Include="Migrations\201512060525406_InitDB.Designer.cs">
       <DependentUpon>201512060525406_InitDB.cs</DependentUpon>

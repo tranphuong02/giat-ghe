@@ -189,6 +189,7 @@
     <Compile Include="Areas\Administrator\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Administrator\Controllers\HomeController.cs" />
     <Compile Include="Areas\Administrator\Controllers\LoginController.cs" />
+    <Compile Include="Areas\Administrator\Controllers\ResourceController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -586,6 +587,9 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Images\Thumbnail\excel.png" />
+    <Content Include="Images\Thumbnail\pdf.png" />
+    <Content Include="Images\Thumbnail\word.png" />
     <Content Include="Scripts\Administrator\Common\common.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -628,6 +632,7 @@
     <Content Include="Areas\Administrator\Views\Category\_Partial\_Get.cshtml" />
     <Content Include="Areas\Administrator\Views\Category\Add.cshtml" />
     <Content Include="Areas\Administrator\Views\Category\Edit.cshtml" />
+    <Content Include="Areas\Administrator\Views\Resource\Index.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

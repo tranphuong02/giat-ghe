@@ -55,6 +55,7 @@ namespace CL.DataAccess.BusinessLogic
             {
                 var category = Delete(id);
 
+
                 return new BaseVM
                 {
                     IsSuccess = true,

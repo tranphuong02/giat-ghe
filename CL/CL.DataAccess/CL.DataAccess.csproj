@@ -53,8 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessLogic\CategoryRepository.cs" />
+    <Compile Include="BusinessLogic\ResourceRepository.cs" />
     <Compile Include="BusinessLogic\UserRepository.cs" />
     <Compile Include="Repository\ICategoryRepository.cs" />
+    <Compile Include="Repository\IResourceRepository.cs" />
     <Compile Include="Repository\IUserRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

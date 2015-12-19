@@ -1,0 +1,344 @@
+﻿@using CL.Transverse
+@using CL.Transverse.Enums
+
+@{
+    ViewBag.Title = "Resource Management";
+    Layout = Constants.GeneralAdminConfigs.Layout;
+}
+@section styles{
+    <link href="~/Content/Administrator/css/plugins/dropzone/basic.css" rel="stylesheet" />
+    <link href="~/Content/Administrator/css/plugins/dropzone/dropzone.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Content/Administrator/js/plugins/dropzone/dropzone.js"></script>
+    <script>
+        // Variables
+        var fileArray = [],
+            myDropzone,
+            resourceDatatable,
+            tableResourceData = [];;
+
+        $(document).ready(function () {
+            // Datatable
+            resourceDatatable = $('.dataTables').DataTable({
+                "dom": 'T<"clear">lfrtip',
+                "tableTools": {
+                    "sSwfPath": datatableToolkitUrl().sSwfPath
+                },
+                "ajax": {
+                    "url": '@Url.Action("GetList", "Resource", new{area = Constants.GeneralAdminConfigs.AdminArea})',
+                    "type": httpMethod().GET,
+                    "dataSrc": function (result) {
+                        tableResourceData = result.resource;
+                        return tableResourceData;
+                    }
+                },
+                "columnDefs": [{ "targets": [5], "orderable": false }],
+                "columns": [
+                   {
+                       "data": "Id",
+                       "className": "hidden"
+                   },
+                   {
+                       "data": "Name",
+                       "className": "text-left"
+                   },
+                   {
+                       "data": "Type",
+                       "render": function (data) {
+                           if (data == '@((int)ResourceType.Image)') {
+                               return "Image";
+                           }
+                           if (data == '@((int)ResourceType.Html)') {
+                               return "Html";
+                           }
+                           if (data == '@((int)ResourceType.Pdf)') {
+                               return "Pdf";
+                           }
+                           if (data == '@((int)ResourceType.Word)') {
+                               return "Word";
+                           }
+                           if (data == '@((int)ResourceType.Excel)') {
+                               return "Excel";
+                           }
+                           if (data == '@((int)ResourceType.Unknow)') {
+                               return "Unknow";
+                           }
+                       },
+                       "className": "text-left"
+                   },
+                           {
+                               "data": "Url",
+                               "render": function (d) {
+                                   if (d.match(/\.(doc|docx)$/)) {
+                                       return '<img src="' + getDomain() + "/Images/Thumbnail/word.png" + '"max-width="100px"/>';
+                                   }
+                                   if (d.match(/\.(xls|xlsx)$/)) {
+                                       return '<img src="' + getDomain() + "/Images/Thumbnail/excel.png" + '"max-width="100px"/>';
+                                   }
+                                   if (d.match(/\.(htm|html)$/)) {
+                                       return '<img src="' + getDomain() + "/Images/Thumbnail/pdf.png" + '"max-width="100px"/>';
+                                   }
+                                   if (d.match(/\.(pdf)$/)) {
+                                       return '<img src="' + getDomain() + "/Images/Thumbnail/pdf.png" + '"max-width="100px"/>';
+                                   }
+                                   return '<img src="/' + d + '" max-width="100px"/>';
+                               },
+                               "className": "text-center"
+                           },
+                           {
+                               "data": "UpdatedDate",
+                               "render": function (data) {
+                                   /// <summary>
+                                   ///  Format datetime to string
+                                   /// </summary>
+                                   /// <param name="data" type="type"></param>
+                                   /// <returns type=""></returns>
+                                   return getFullTime(getNumberOnly(data));
+                               },
+                               "className": "text-left"
+                           },
+                           {
+                               "data": function (d) {
+                                   return d.Id;
+                               },
+                               "render": function (d) {
+                                   return ' <button class="btn btn-danger" id="remove-' + d + '" onclick="removeResource(' + d + ')"><i class="fa fa-trash"></i></button>';
+                               },
+                               "className": "text-center"
+                           }
+                ],
+                "fnDrawCallback": function (oSettings) {
+                }
+            });
+
+            // Listener
+            $('.dataTables').on('processing.dt', function (e, settings, processing) {
+                if (processing) {
+                    $('#resourceManagementTableContent :input').attr('disabled', true);
+                } else {
+                    $('#resourceManagementTableContent :input').removeAttr('disabled');
+                }
+            });
+
+
+            Dropzone.options.myAwesomeDropzone = {
+                init: function () {
+                    myDropzone = this;
+                    this.cleaningUp = false;
+                    this.on("addedfile", function (file) {
+                        var count = 0;
+                        fileArray.push(file);
+                        $.each($(".dz-filename"), function (index, d) {
+                            if ($(d).text() == file.name) {
+                                count++;
+                                if (count > 1) {
+                                    toastr.error(file.name + " already exists.");
+                                    myDropzone.removeFile(file);
+                                    fileArray.remove(file);
+                                }
+                            }
+                        });
+                    });
+                    this.cleanUpOneFile = function (fileName) {
+                        this.cleaningUp = true;
+                        removeDropzoneFileByName(fileName);
+                        this.cleaningUp = false;
+                    };
+                    this.on("removedfile", function (file) {
+                        if (this.cleaningUp) {
+                            return;
+                        }
+
+                        var id = file.previewElement.id.split('-')[1];
+
+                        if (!id) {
+                            return;
+                        }
+
+                        // call ajax to server
+                        var removefile = $.ajax({
+                            method: "POST",
+                            url: '@Url.Action("Delete", "Resource", new{area=Constants.GeneralAdminConfigs.AdminArea})',
+                            data: { id: id }
+                        });
+
+                        removefile.done(function (message) {
+                            if (!message.IsSuccess) {
+                                // get file url in blob
+                                var indexOfSrc = file.previewElement.innerHTML.indexOf('src');
+                                var fileUrlInBlob = file.previewElement.innerHTML.substr(indexOfSrc).split('"')[1];
+
+                                var mockFile = { name: file.name, lastModified: file.lastModified, size: file.size, type: file.type, status: Dropzone.ERROR };
+
+                                // Call the default addedfile event handler
+                                myDropzone.emit("addedfile", mockFile);
+
+                                // And optionally show the thumbnail of the file:
+                                myDropzone.emit("thumbnail", mockFile, fileUrlInBlob);
+
+                                myDropzone.files.push(mockFile);
+
+                                swal("Deleted!", "Error occur, please try again.", "error");
+                            } else {
+                                swal("Deleted!", "Your file has been deleted.", "success");
+                                reloadResourceManagementDatatable();
+                            }
+                        });
+                    });
+                    this.on("complete", function (data) {
+                        if (data.status == "error") {
+                            $.each($(".dz-filename"), function (index, d) {
+                                if ($(d).text() == data.name) {
+                                    $(d).parent().parent().find(".dz-remove").remove();
+                                }
+                            });
+                        } else {
+                            var res = JSON.parse(data.xhr.responseText);
+                            if (res.IsSuccess) {
+                                $.each($(".dz-filename"), function (index, d) {
+                                    if ($(d).text() == res.Name) {
+                                        $(d).closest(".dz-preview").attr('id', "Id-" + res.Id);
+                                    }
+                                });
+                                toastr.success(res.Message);
+                                reloadResourceManagementDatatable();
+                            } else {
+                                if (res.Name) {
+                                    removeDropzoneFileByName(res.Name);
+                                }
+                                toastr.error(res.Message);
+                            }
+                        }
+                    });
+                },
+                acceptedFiles: ".csv," +
+                    "application/msword," +
+                    "application/vnd.ms-powerpoint," +
+                    "application/vnd.openxmlformats-officedocument.presentationml.presentation," +
+                    "application/vnd.ms-excel," +
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet," +
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document," +
+                    "image/*," +
+                    "text/plain," +
+                    "text/html," +
+                    "video/*," +
+                    "audio/*," +
+                    ".pdf",
+                uploadMultiple: false,
+                addRemoveLinks: true,
+                processingmultiple: false,
+                sendingmultiple: false,
+                completemultiple: false,
+                canceledmultiple: false,
+                successmultiple: false,
+                parallelUploads: 1,
+                clickable: true,
+                dictRemoveFile: "Delete file",
+                dictInvalidFileType: "Invalid file type",
+                dictDefaultMessage: "Drop files here to upload",
+                dictCancelUpload: "Cancel upload",
+                autoProcessQueue: true,
+                dictRemoveFileConfirmation: "Are you sure to delete this file?",
+                maxFiles: null,
+            };
+
+            function removeDropzoneFileByName(name) {
+                var arrayToDelete = [];
+                $.each(fileArray, function (index, d) {
+                    if (d.name == name) {
+                        myDropzone.removeFile(d);
+                        arrayToDelete.push(d);
+                    }
+                });
+
+                $.each(arrayToDelete, function (index, d) {
+                    fileArray.remove(d);
+                });
+            }
+
+            Dropzone.confirm = function (question, accepted, rejected) {
+                // show dialog
+                swal({
+                    title: question,
+                    text: "Your will not be able to recover this file!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "No, cancel plz!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false,
+                    showLoaderOnConfirm: true,
+                },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            accepted();
+                        } else {
+                            rejected = function () { return; };
+                            rejected();
+                            swal("Cancelled", "Your file is safe :)", "error");
+                        }
+                    });
+            };
+        });
+
+        function reloadResourceManagementDatatable() {
+            resourceDatatable.ajax.reload(null, false);
+        }
+    </script>
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Upload resources</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form id="my-awesome-dropzone" class="dropzone" action="@Url.Action("Add", "Resource")" method="POST">
+                    <div class="dropzone-previews"></div>
+                </form>
+                <div class="m text-right"><small>File name is unique. If you add multiple files with same name, we just keep first one for you</small> </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>List resources</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content" id="resourceManagementTableContent">
+                <table class="table table-striped table-bordered table-hover dataTables" style="width: 100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th class="col-lg-2">Name</th>
+                            <th class="col-lg-2">Type</th>
+                            <th class="col-lg-2">Thumbnail</th>
+                            <th class="col-lg-2">Created Date</th>
+                            <th class="col-lg-2">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
